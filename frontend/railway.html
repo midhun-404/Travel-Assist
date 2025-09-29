@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Railway Services - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* styling same format as airport page */
+.service-list { max-width:700px; margin:30px auto; background-color:rgba(255,255,255,0.95); padding:25px 30px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.service-list h1 { color:#007BFF; margin-bottom:20px; text-align:center;}
+.service-item { display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #ddd;}
+.service-item label { font-size:16px; }
+.service-item input[type="checkbox"] { width:18px; height:18px; cursor:pointer; }
+.total-section { margin-top:20px; text-align:right; font-size:18px; font-weight:bold; }
+button.continue-btn { display:block; margin:25px auto 0; padding:12px 28px; font-size:16px; border-radius:8px; border:none; background-color:#007BFF; color:white; font-weight:bold; cursor:pointer; transition:all 0.3s; }
+button.continue-btn:hover { background-color:#0056b3; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="navbar"><div class="logo"><h2>TRAVEL ASSIST</h2></div></div>
+
+<div class="service-list" id="railCard">
+  <h1>Railway Assistance Services</h1>
+
+  <div class="service-item"><label><input type="checkbox" value="Station Entrance Assistance" data-price="150"> Station Entrance Assistance (₹150)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Platform Guidance" data-price="200"> Platform Guidance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Finding Berth/Seat" data-price="250"> Finding Berth/Seat (₹250)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Luggage Assistance" data-price="200"> Luggage Assistance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Ticket Checking Help" data-price="150"> Ticket Checking Help (₹150)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Child Assistance" data-price="200"> Child Assistance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Wheelchair Assistance" data-price="300"> Wheelchair Assistance (₹300)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Special Needs Support" data-price="350"> Special Needs Support (₹350)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Food Assistance" data-price="200"> Food Assistance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Train Info Guidance" data-price="150"> Train Info Guidance (₹150)</label></div>
+
+  <div class="total-section">Total: ₹<span id="railTotal">0</span></div>
+  <button class="continue-btn" id="railContinue">Continue</button>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+(function(){
+  const card = document.getElementById('railCard');
+  const checkboxes = card.querySelectorAll('.service-item input[type="checkbox"]');
+  const totalEl = document.getElementById('railTotal');
+  const continueBtn = document.getElementById('railContinue');
+
+  function updateTotal(){
+    let total = 0;
+    checkboxes.forEach(cb=>{ if(cb.checked) total += parseInt(cb.dataset.price || 0,10); });
+    totalEl.innerText = total;
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
+
+  continueBtn.addEventListener('click', () => {
+    const selectedServices = [];
+    checkboxes.forEach(cb => { if(cb.checked) selectedServices.push(cb.value); });
+    if(selectedServices.length === 0){ alert("Please select at least one service"); return; }
+    const railwayData = { services: selectedServices, total: parseInt(totalEl.innerText || '0',10), type: 'Railway' };
+    localStorage.setItem('railwaySelection', JSON.stringify(railwayData));
+    localStorage.removeItem('airportSelection');
+    window.location.href = 'journey_selection.html';
+  });
+
+  updateTotal();
+})();
+</script>
+</body>
+</html>

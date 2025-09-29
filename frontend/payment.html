@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Payment - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.payment-card { max-width:500px; margin:50px auto; background-color:rgba(255,255,255,0.95); padding:30px 25px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.15); text-align:center; }
+.payment-card h1 { color:#007BFF; margin-bottom:25px;}
+#card-element { border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:15px;}
+#card-errors { color:red; margin-bottom:15px;}
+button.pay-btn { padding:12px 28px; font-size:16px; border-radius:8px; border:none; background-color:#007BFF; color:white; font-weight:bold; cursor:pointer; transition:all 0.3s;}
+</style>
+</head>
+<body>
+<div class="navbar"><div class="logo"><h2>TRAVEL ASSIST</h2></div></div>
+
+<div class="payment-card">
+  <h1>Payment</h1>
+  <p id="amountDisplay">Loading...</p>
+
+  <div id="card-element"></div>
+  <div id="card-errors" role="alert"></div>
+
+  <button class="pay-btn" id="payBtn">Pay Now</button>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+(async function(){
+  const journey = JSON.parse(localStorage.getItem('journeyDetails'));
+  const paymentAmount = localStorage.getItem('paymentAmount');
+
+  if(!journey || !paymentAmount){
+    alert('No payment details found.');
+    window.location.href = 'bill_summary.html';
+    return;
+  }
+
+  document.getElementById('amountDisplay').innerText = `Total Amount: ₹${paymentAmount}`;
+
+  const stripe = Stripe("pk_test_51RVEET05nKuppbvMKaHJRBfShiFs7WK3ixNp1Lzkqpm95AkSGpxnsTPKCcj1rJTJrr8fe0aWX7jc8NgZVb7BlSaz00DgLZK5tx");
+  const elements = stripe.elements();
+  const card = elements.create('card', {hidePostalCode:true});
+  card.mount('#card-element');
+
+  card.on('change', (event) => {
+    document.getElementById('card-errors').textContent = event.error ? event.error.message : '';
+  });
+
+  document.getElementById('payBtn').addEventListener('click', async () => {
+    const payBtn = document.getElementById('payBtn');
+    payBtn.disabled = true;
+    payBtn.innerText = 'Processing...';
+
+    try {
+      const res = await fetch("http://localhost:5000/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: paymentAmount })
+      });
+      const data = await res.json();
+      if(data.error){
+        throw new Error(data.error);
+      }
+      const clientSecret = data.clientSecret;
+      const result = await stripe.confirmCardPayment(clientSecret, { payment_method: { card }});
+      if(result.error){
+        document.getElementById('card-errors').textContent = result.error.message;
+        payBtn.disabled = false; payBtn.innerText = 'Pay Now';
+        return;
+      }
+      if(result.paymentIntent && result.paymentIntent.status === 'succeeded'){
+        // create booking object and save locally (status Pending; admin approves later)
+        const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+        const booking = {
+          bookingId: Date.now(),
+          type: journey.type,
+          name: journey.name,
+          phone: journey.phone,
+          email: journey.email,
+          date: journey.date,
+          time: journey.time,
+          flightTrain: journey.flightTrain,
+          station: journey.station,
+          services: journey.services,
+          total: journey.total,
+          status: "Pending",
+          helper: null,
+          createdAt: new Date().toISOString()
+        };
+        allBookings.push(booking);
+        localStorage.setItem('allBookings', JSON.stringify(allBookings));
+        localStorage.setItem('lastBookingId', booking.bookingId.toString());
+
+        alert('Payment successful! Booking saved.');
+        // redirect to ticket (ticket will show helper if assigned by admin; otherwise 'Not assigned')
+        window.location.href = 'ticket.html';
+      } else {
+        throw new Error('Payment failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Payment failed: ' + (err.message || err));
+      const payBtn2 = document.getElementById('payBtn');
+      payBtn2.disabled = false; payBtn2.innerText = 'Pay Now';
+    }
+  });
+})();
+</script>
+</body>
+</html>

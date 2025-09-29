@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Signup - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST</h2></div>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="service_selection.html">Services</a>
+    </div>
+</div>
+
+<div class="card">
+    <h1>Login / Signup</h1>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+
+        <div style="text-align:center; margin-top:1rem;">
+            <button type="button" onclick="loginUser()">Login / Signup</button>
+        </div>
+    </form>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+function loginUser() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if(!username || !password) { alert('Please enter username and password'); return; }
+
+    // Save login status to localStorage
+    localStorage.setItem('userStatus', JSON.stringify({ type:'login', username }));
+    if(!localStorage.getItem('userHistory_'+username)) {
+        localStorage.setItem('userHistory_'+username, JSON.stringify([])); // empty booking history
+    }
+
+    alert('Login Successful!');
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>

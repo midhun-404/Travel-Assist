@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - Travel Assist</title>
+<link rel="stylesheet" href="../css/premium-style.css">
+<style>
+/* ========================
+   Body & Background
+======================== */
+body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar .logo h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* ========================
+   Footer
+======================== */
+.footer {
+    text-align: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px;
+    margin-top: auto;
+    font-weight: bold;
+}
+
+/* ========================
+   Login Card
+======================== */
+.card {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: fadeIn 0.8s ease-in-out;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Card Title */
+.card h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ========================
+   Inputs
+======================== */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+input:focus {
+    background: rgba(255,255,255,0.3);
+    box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* ========================
+   Buttons
+======================== */
+button {
+    background: linear-gradient(45deg, #ff6a00, #ee0979);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+}
+
+button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ========================
+   Responsive
+======================== */
+@media (max-width:480px) {
+    .card {
+        margin: 40px 20px;
+        padding: 20px;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST</h2></div>
+</div>
+
+<!-- Login Card -->
+<div class="card">
+    <h1>Admin Login</h1>
+    <form id="adminLoginForm">
+        <label for="adminUsername">Username:</label>
+        <input type="text" id="adminUsername" placeholder="Enter username" required>
+
+        <label for="adminPassword">Password:</label>
+        <input type="password" id="adminPassword" placeholder="Enter password" required>
+
+        <button type="button" onclick="loginAdmin()">Login</button>
+    </form>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+function loginAdmin() {
+    const username = document.getElementById('adminUsername').value.trim();
+    const password = document.getElementById('adminPassword').value.trim();
+
+    if(username === "admin" && password === "admin123") {
+        localStorage.setItem('adminStatus', JSON.stringify({ loggedIn: true, username }));
+        alert("Admin Login Successful!");
+        window.location.href = "admin_dashboard.html";
+    } else {
+        alert("Invalid Admin Credentials");
+    }
+}
+</script>
+</body>
+</html>

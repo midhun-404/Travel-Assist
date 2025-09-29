@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Bookings - Admin</title>
+<link rel="stylesheet" href="../css/premium-style.css">
+<style>
+/* ========================
+   Body & Background
+======================== */
+body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar .logo h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+/* ========================
+   Footer
+======================== */
+.footer {
+    text-align: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px;
+    margin-top: auto;
+    font-weight: bold;
+}
+
+/* ========================
+   Card / Container
+======================== */
+.card {
+    max-width: 95%;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: fadeIn 0.8s ease-in-out;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Card Title */
+.card h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ========================
+   Buttons
+======================== */
+button {
+    background: linear-gradient(45deg, #ff6a00, #ee0979);
+    color: white;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ========================
+   Table Styling
+======================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    color: white;
+}
+
+table th {
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.05);
+}
+
+table tr:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ========================
+   Responsive
+======================== */
+@media (max-width:768px) {
+    table th, table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST - Admin</h2></div>
+    <div class="nav-links"><a href="admin_dashboard.html">Dashboard</a></div>
+</div>
+
+<div class="card">
+    <h1>Manage Bookings</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th><th>Type</th><th>Date</th><th>Time</th>
+                <th>Flight/Train</th><th>Station</th><th>Services</th>
+                <th>Total (INR)</th><th>Status</th><th>Helper</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="bookingTable"></tbody>
+    </table>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+window.onload = () => {
+    const admin = JSON.parse(localStorage.getItem('adminStatus'));
+    const fromDashboard = localStorage.getItem('fromDashboard');
+    if(!admin || !admin.loggedIn){
+        alert("Please login as admin");
+        window.location.href = "admin_login.html";
+        return;
+    }
+    if(!fromDashboard){
+        alert("Access denied! Use dashboard");
+        window.location.href = "admin_dashboard.html";
+        return;
+    }
+    localStorage.removeItem('fromDashboard');
+    loadBookings();
+};
+
+// Load bookings from localStorage
+function loadBookings(){
+    const tbody = document.getElementById('bookingTable');
+    tbody.innerHTML="";
+
+    Object.keys(localStorage).forEach(key=>{
+        if(key.startsWith('userHistory_')){
+            let bookings=JSON.parse(localStorage.getItem(key));
+            if(!Array.isArray(bookings)) bookings=[bookings];
+
+            bookings.forEach((b,index)=>{
+                const tr=document.createElement('tr');
+                tr.innerHTML=`
+                    <td>${b.name || "-"}</td>
+                    <td>${b.type || "-"}</td>
+                    <td>${b.date || "-"}</td>
+                    <td>${b.time || "-"}</td>
+                    <td>${b.flightTrain || "-"}</td>
+                    <td>${b.start || "-"}</td>
+                    <td>${(b.services||[]).join(", ")}</td>
+                    <td>₹${b.total || "0"}</td>
+                    <td id="status_${key}_${index}">${b.status||"Pending"}</td>
+                    <td id="helper_${key}_${index}">${b.helper || "Not assigned"}</td>
+                    <td>
+                        <button onclick="approveBooking('${key}',${index})">Approve</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    });
+}
+
+// Approve booking + assign helper
+function approveBooking(key,index){
+    let bookings=JSON.parse(localStorage.getItem(key));
+    if(!Array.isArray(bookings)) bookings=[bookings];
+
+    const helpers = JSON.parse(localStorage.getItem('helpers')) || [];
+    const helperAssigned = helpers.length>0 ? helpers[Math.floor(Math.random()*helpers.length)] : "No Helper Available";
+
+    bookings[index].status="Approved";
+    bookings[index].helper = helperAssigned;
+
+    localStorage.setItem(key,JSON.stringify(bookings));
+
+    document.getElementById(`status_${key}_${index}`).innerText="Approved";
+    document.getElementById(`helper_${key}_${index}`).innerText=helperAssigned;
+
+    alert(`Booking Approved!\nHelper Assigned: ${helperAssigned}\n(SMS simulated)`);
+}
+</script>
+</body>
+</html>

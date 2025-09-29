@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Assist - Home</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* Full-width Slideshow */
+.slideshow-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    height: 500px;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Fill both sides */
+}
+
+/* Fade animation */
+.fade {
+    animation: fadeEffect 1.5s;
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0.4} 
+    to {opacity: 1}
+}
+
+/* Transparent overlay card */
+.overlay-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255,255,255,0.85);
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.overlay-card h1 {
+    color: #007BFF;
+    margin-bottom: 15px;
+}
+
+.overlay-card p {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.overlay-card button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.overlay-card button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.overlay-card button:active {
+    animation: pop 0.2s;
+}
+
+/* Fade in animation for overlay */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-10px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* Navbar admin link */
+.navbar a.admin-login {
+    background-color: white;
+    color: #007BFF;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.navbar a.admin-login:hover {
+    background-color: #e6e6e6;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST</h2></div>
+    <div class="nav-links">
+        <a href="admin_login.html" class="admin-login">Admin Login</a>
+    </div>
+</div>
+
+<!-- Slideshow -->
+<div class="slideshow-container">
+    <div class="slide fade">
+        <img src="assets/air home 2 main_upscayl_2x_remacri-4x.png" alt="Airport 1">
+    </div>
+    <div class="slide fade">
+        <img src="assets/air home.jpeg" alt="Airport 2">
+    </div>
+    <div class="slide fade">
+        <img src="assets/airhome.jpeg" alt="Airport 3">
+    </div>
+    <div class="slide fade">
+        <img src="assets/train home.jpeg" alt="Train 1">
+    </div>
+    <div class="slide fade">
+        <img src="assets/train home2.jpeg" alt="Train 2">
+    </div>
+    <div class="slide fade">
+        <img src="assets/air home 2 main_upscayl_2x_remacri-4x.png" alt="Airport 4">
+    </div>
+
+    <!-- Overlay card -->
+    <div class="overlay-card">
+        <h1>Welcome to Travel Assist</h1>
+        <p>Book a guide to get assistance at Airport or Railway Station.</p>
+        <button onclick="location.href='service_selection.html'">Continue</button>
+    </div>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+// Slideshow JS
+let slideIndex = 0;
+function showSlides() {
+    let slides = document.getElementsByClassName("slide");
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {slideIndex = 1}    
+    slides[slideIndex-1].style.display = "block";  
+    setTimeout(showSlides, 3000); // Change image every 3 seconds
+}
+
+window.onload = () => {
+    showSlides();
+};
+</script>
+
+</body>
+</html>

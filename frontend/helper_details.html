@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helper Details - Admin</title>
+<link rel="stylesheet" href="../css/premium-style.css">
+<style>
+/* ========================
+   Body & Background
+======================== */
+body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar .logo h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* ========================
+   Footer
+======================== */
+.footer {
+    text-align: center;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 15px;
+    margin-top: auto;
+    font-weight: bold;
+}
+
+/* ========================
+   Card / Container
+======================== */
+.card {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: fadeIn 0.8s ease-in-out;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Card Title */
+.card h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #ff6a00;
+    box-shadow: 0 0 10px rgba(255,106,0,0.5);
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(45deg, #ff6a00, #ee0979);
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* Helper list */
+#helperList li {
+    list-style: none;
+    margin: 10px 0;
+    padding: 12px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+#helperList li:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+#helperList li button {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#helperList li button:hover {
+    background-color: darkred;
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ========================
+   Responsive
+======================== */
+@media (max-width:768px) {
+    .card {
+        width: 90%;
+    }
+
+    input {
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST - Admin</h2></div>
+</div>
+
+<div class="card">
+    <h1>Helper / Staff Management</h1>
+
+    <h3>Add Helper</h3>
+    <input type="text" id="helperName" placeholder="Helper Name" required>
+    <button onclick="addHelper()">Add Helper</button>
+
+    <h3>Current Helpers</h3>
+    <ul id="helperList"></ul>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+window.onload = () => {
+    const admin = JSON.parse(localStorage.getItem('adminStatus'));
+    if(!admin || !admin.loggedIn) {
+        alert("Please login as admin");
+        window.location.href = "admin_login.html";
+        return;
+    }
+    loadHelpers();
+};
+
+// Load helpers from localStorage
+function loadHelpers() {
+    const list = document.getElementById('helperList');
+    list.innerHTML = "";
+    const helpers = JSON.parse(localStorage.getItem('helpers')) || [];
+    helpers.forEach((h, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${h}</span>
+            <button onclick="removeHelper(${i})">Remove</button>
+        `;
+        list.appendChild(li);
+    });
+}
+
+// Add new helper
+function addHelper() {
+    const name = document.getElementById('helperName').value.trim();
+    if(!name) { alert("Enter helper name"); return; }
+
+    const helpers = JSON.parse(localStorage.getItem('helpers')) || [];
+    helpers.push(name);
+    localStorage.setItem('helpers', JSON.stringify(helpers));
+    document.getElementById('helperName').value = "";
+    loadHelpers();
+}
+
+// Remove helper
+function removeHelper(index) {
+    const helpers = JSON.parse(localStorage.getItem('helpers')) || [];
+    helpers.splice(index, 1);
+    localStorage.setItem('helpers', JSON.stringify(helpers));
+    loadHelpers();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Travel Assist</title>
+<link rel="stylesheet" href="../css/premium-style.css">
+<style>
+/* ========================
+   Body & Background
+======================== */
+body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 20px;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color:white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.navbar a {
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-weight:bold;
+    transition: 0.3s;
+}
+.navbar a:hover { text-decoration:underline; }
+
+/* ========================
+   Footer
+======================== */
+.footer {
+    text-align:center;
+    margin-top:auto;
+    padding:15px;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color:white;
+    font-weight:bold;
+}
+
+/* ========================
+   Dashboard Cards
+======================== */
+.dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.card-dashboard {
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    width: 250px;
+    text-align: center;
+    padding: 2rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.card-dashboard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.card-dashboard h2 {
+    color: #ffdd59;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.card-dashboard p {
+    font-size: 14px;
+    color: #f0f0f0;
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ========================
+   Responsive
+======================== */
+@media (max-width:768px) {
+    .dashboard {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-dashboard {
+        width: 90%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><h2>TRAVEL ASSIST - Admin</h2></div>
+    <div class="nav-links">
+        <a href="#" onclick="logoutAdmin()">Logout</a>
+    </div>
+</div>
+
+<div class="dashboard">
+    <div class="card-dashboard" onclick="navigateTo('manage_bookings.html')">
+        <h2>Manage Bookings</h2>
+        <p>View and approve user bookings. Assign helpers.</p>
+    </div>
+    <div class="card-dashboard" onclick="navigateTo('helper_details.html')">
+        <h2>Helper Details</h2>
+        <p>Add, remove, or manage helper/staff info.</p>
+    </div>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+window.onload = () => {
+    const admin = JSON.parse(localStorage.getItem('adminStatus'));
+    if(!admin || !admin.loggedIn){
+        alert("Please login as admin");
+        window.location.href = "admin_login.html";
+    }
+};
+
+function navigateTo(page) {
+    localStorage.setItem('fromDashboard','true'); // flag for page access
+    window.location.href = page;
+}
+
+function logoutAdmin(){
+    localStorage.removeItem('adminStatus');
+    alert("Logged out successfully!");
+    window.location.href = "admin_login.html";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bill Summary - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.card-summary { max-width:650px; margin:40px auto; background-color:rgba(255,255,255,0.95); padding:30px 25px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.card-summary h1 { color:#007BFF; text-align:center; margin-bottom:25px;}
+.card-summary ul { margin-left:20px; margin-top:10px;}
+button.proceed-btn { display:block; margin:25px auto 0; padding:12px 28px; font-size:16px; border-radius:8px; border:none; background-color:#007BFF; color:white; font-weight:bold; cursor:pointer; transition:all 0.3s; }
+</style>
+</head>
+<body>
+<div class="navbar"><div class="logo"><h2>TRAVEL ASSIST</h2></div></div>
+
+<div class="card-summary">
+  <h1>Bill Summary</h1>
+  <div id="summaryDetails"></div>
+  <button class="proceed-btn" onclick="proceedToPayment()">Proceed to Payment</button>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+(function(){
+  const journey = JSON.parse(localStorage.getItem('journeyDetails'));
+  const el = document.getElementById('summaryDetails');
+
+  if(!journey){
+    alert('No journey details found. Please start again.');
+    window.location.href = 'service_selection.html';
+  } else {
+    el.innerHTML = `
+      <p><strong>Type of Travel:</strong> ${journey.type}</p>
+      <p><strong>Name:</strong> ${journey.name}</p>
+      <p><strong>Phone:</strong> ${journey.phone}</p>
+      <p><strong>Email:</strong> ${journey.email}</p>
+      <p><strong>Date & Time:</strong> ${journey.date} ${journey.time}</p>
+      <p><strong>${journey.type === "Airport" ? "Flight Number" : "Train Number"}:</strong> ${journey.flightTrain}</p>
+      <p><strong>${journey.type === "Airport" ? "Airport" : "Station"}:</strong> ${journey.station}</p>
+      <p><strong>Selected Services:</strong></p>
+      <ul>${journey.services.map(s => `<li>${s}</li>`).join('')}</ul>
+      <p><strong>Total Amount:</strong> ₹${journey.total}</p>
+    `;
+  }
+
+  window.proceedToPayment = function(){
+    localStorage.setItem('paymentAmount', journey.total.toString());
+    window.location.href = 'payment.html';
+  };
+})();
+</script>
+</body>
+</html>

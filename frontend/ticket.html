@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ticket - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ticket-card {
+  max-width:500px; margin:30px auto;
+  background:rgba(255,255,255,0.95);
+  border-radius:12px; padding:25px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  text-align:center; animation:fadeIn 0.5s ease-in-out;
+}
+.ticket-card.airport { border-top:6px solid #1E90FF; }
+.ticket-card.railway { border-top:6px solid #28a745; }
+.ticket-card h2 { color:#007BFF; margin-bottom:10px; }
+.ticket-card p { margin:8px 0; font-size:16px; }
+.ticket-qr { margin-top:20px; }
+#downloadBtn {
+  margin-top:15px; padding:10px 18px;
+  border:none; border-radius:8px;
+  background:#007BFF; color:white; cursor:pointer;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="navbar"><div class="logo"><h2>TRAVEL ASSIST</h2></div></div>
+
+<div id="ticketContainer"></div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+(function(){
+  const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+  const lastBookingId = localStorage.getItem('lastBookingId');
+  const helpers = JSON.parse(localStorage.getItem('helpers') || []);
+
+  if(!lastBookingId || allBookings.length === 0){
+    document.getElementById('ticketContainer').innerHTML =
+      "<h2 style='text-align:center;margin-top:50px;'>Booking not found!</h2>";
+    return;
+  }
+
+  let booking = allBookings.find(b => b.bookingId.toString() === lastBookingId.toString());
+  if(!booking){
+    document.getElementById('ticketContainer').innerHTML =
+      "<h2 style='text-align:center;margin-top:50px;'>Booking not found!</h2>";
+    return;
+  }
+
+  // ✅ Auto-assign helper if not already assigned
+  if(!booking.helper){
+    booking.helper = helpers.length > 0
+      ? helpers[Math.floor(Math.random() * helpers.length)]
+      : "No Helper Available";
+    booking.status = "Pending"; // default status
+  }
+
+  // ✅ Save booking also into userHistory_* so admin can see it
+  const historyKey = `userHistory_${booking.bookingId}`;
+  localStorage.setItem(historyKey, JSON.stringify(booking));
+
+  // update allBookings in case we modified helper
+  const idx = allBookings.findIndex(b => b.bookingId === booking.bookingId);
+  if(idx !== -1) allBookings[idx] = booking;
+  localStorage.setItem('allBookings', JSON.stringify(allBookings));
+
+  const container = document.getElementById('ticketContainer');
+  const typeClass = (booking.type && booking.type.toLowerCase() === 'airport') ? 'airport' : 'railway';
+
+  const ticketDiv = document.createElement('div');
+  ticketDiv.className = `ticket-card ${typeClass}`;
+  ticketDiv.innerHTML = `
+    <h2>${booking.type} Assistance Ticket</h2>
+    <p><strong>Name:</strong> ${booking.name}</p>
+    <p><strong>Date:</strong> ${booking.date}</p>
+    <p><strong>Time:</strong> ${booking.time}</p>
+    <p><strong>Flight/Train:</strong> ${booking.flightTrain}</p>
+    <p><strong>Airport/Station:</strong> ${booking.station}</p>
+    <p><strong>Services:</strong> ${booking.services.join(", ")}</p>
+    <p><strong>Total Paid:</strong> ₹${booking.total}</p>
+    <p><strong>Assigned Helper:</strong> ${booking.helper}</p>
+    <div class="ticket-qr" id="ticketQR"></div>
+    <button id="downloadBtn">Download Ticket (PDF)</button>
+  `;
+  container.appendChild(ticketDiv);
+
+  // generate QR code
+  const qrText = `Booking ID: ${booking.bookingId}\nName: ${booking.name}\nType: ${booking.type}\nDate: ${booking.date}\nTime: ${booking.time}\nStation: ${booking.station}\nHelper: ${booking.helper}`;
+  new QRCode(document.getElementById('ticketQR'), { text: qrText, width:150, height:150 });
+
+  // download PDF
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Travel Assist - M-Ticket", 20, 20);
+    doc.setFontSize(12);
+    let y = 35;
+    const details = [
+      ['Booking ID', booking.bookingId],
+      ['Name', booking.name],
+      ['Type', booking.type],
+      ['Date', booking.date],
+      ['Time', booking.time],
+      ['Flight/Train', booking.flightTrain],
+      ['Station', booking.station],
+      ['Services', booking.services.join(", ")],
+      ['Total (INR)', booking.total],
+      ['Assigned Helper', booking.helper]
+    ];
+    details.forEach(d => { doc.text(`${d[0]}: ${d[1]}`, 20, y); y += 8; });
+    // add qr image
+    const qrCanvas = document.querySelector('#ticketQR canvas');
+    if(qrCanvas){
+      const imgData = qrCanvas.toDataURL('image/png');
+      doc.addImage(imgData, 'PNG', 140, 20, 50, 50);
+    }
+    doc.save(`Ticket_${booking.bookingId}.pdf`);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Airport Services - Travel Assist</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* copied your inline styling to keep visual consistent */
+.service-list { max-width:700px; margin:30px auto; background-color:rgba(255,255,255,0.95); padding:25px 30px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.service-list h1 { color:#007BFF; margin-bottom:20px; text-align:center;}
+.service-item { display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #ddd;}
+.service-item label { font-size:16px; }
+.service-item input[type="checkbox"] { width:18px; height:18px; cursor:pointer; }
+.total-section { margin-top:20px; text-align:right; font-size:18px; font-weight:bold; }
+button.continue-btn { display:block; margin:25px auto 0; padding:12px 28px; font-size:16px; border-radius:8px; border:none; background-color:#007BFF; color:white; font-weight:bold; cursor:pointer; transition:all 0.3s; }
+button.continue-btn:hover { background-color:#0056b3; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="navbar"><div class="logo"><h2>TRAVEL ASSIST</h2></div></div>
+
+<div class="service-list" id="airportCard">
+  <h1>Airport Assistance Services</h1>
+
+  <!-- Service Options -->
+  <div class="service-item"><label><input type="checkbox" value="Airport Entrance Assistance" data-price="200"> Airport Entrance Assistance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Check-in & Baggage Drop" data-price="300"> Check-in & Baggage Drop (₹300)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Immigration Assistance" data-price="400"> Immigration Assistance (₹400)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Security Screening Help" data-price="250"> Security Screening Help (₹250)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="X-ray Your Bag" data-price="150"> X-ray Your Bag (₹150)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Boarding Gate Assistance" data-price="350"> Boarding Gate Assistance (₹350)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Child Assistance" data-price="200"> Child Assistance (₹200)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Wheelchair Assistance" data-price="300"> Wheelchair Assistance (₹300)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="VIP Lounge Access" data-price="500"> VIP Lounge Access (₹500)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Luggage Carry Assistance" data-price="250"> Luggage Carry Assistance (₹250)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Priority Boarding" data-price="400"> Priority Boarding (₹400)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Flight Info Guidance" data-price="150"> Flight Info Guidance (₹150)</label></div>
+  <div class="service-item"><label><input type="checkbox" value="Special Needs Support" data-price="350"> Special Needs Support (₹350)</label></div>
+
+  <div class="total-section">Total: ₹<span id="airportTotal">0</span></div>
+  <button class="continue-btn" id="airportContinue">Continue</button>
+</div>
+
+<div class="footer">&copy; 2025 Travel Assist</div>
+
+<script>
+/* ensure this page only used when user selected Airport from service_selection */
+(function(){
+  // get checkboxes inside this card only
+  const card = document.getElementById('airportCard');
+  const checkboxes = card.querySelectorAll('.service-item input[type="checkbox"]');
+  const totalEl = document.getElementById('airportTotal');
+  const continueBtn = document.getElementById('airportContinue');
+
+  function updateTotal(){
+    let total = 0;
+    checkboxes.forEach(cb => { if(cb.checked) total += parseInt(cb.dataset.price || 0, 10); });
+    totalEl.innerText = total;
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
+
+  continueBtn.addEventListener('click', () => {
+    const selectedServices = [];
+    checkboxes.forEach(cb => { if(cb.checked) selectedServices.push(cb.value); });
+    if(selectedServices.length === 0){ alert("Please select at least one service"); return; }
+    const airportData = { services: selectedServices, total: parseInt(totalEl.innerText || '0', 10), type: 'Airport' };
+    localStorage.setItem('airportSelection', JSON.stringify(airportData));
+    // clear railway selection if any
+    localStorage.removeItem('railwaySelection');
+    window.location.href = 'journey_selection.html';
+  });
+
+  // initialize
+  updateTotal();
+})();
+</script>
+</body>
+</html>

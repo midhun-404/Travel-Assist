@@ -1,0 +1,278 @@
+/* ========================
+   Global Reset & Base
+======================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #d0e6ff, #f1f8f7);
+    color: #333;
+    line-height: 1.6;
+    transition: all 0.5s ease;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #0056b3, #00c6ff);
+    color: white;
+    padding: 18px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    animation: slideDown 0.6s ease forwards;
+}
+
+.navbar .logo h2 {
+    font-size: 1.7rem;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 20px;
+    transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+    transform: scale(1.05);
+}
+
+/* ========================
+   Footer
+======================== */
+.footer {
+    text-align: center;
+    background: linear-gradient(90deg, #00c6ff, #0056b3);
+    color: white;
+    padding: 25px;
+    margin-top: 40px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -6px 18px rgba(0,0,0,0.15);
+}
+
+/* ========================
+   Buttons
+======================== */
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #007BFF, #00C6FF);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+button:hover {
+    background: linear-gradient(90deg, #0056b3, #0099cc);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+button:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* ========================
+   Cards & Containers
+======================== */
+.card, .card-dashboard {
+    background: linear-gradient(145deg, #ffffff, #d0f0ff);
+    border-radius: 18px;
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 700px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    transition: all 0.4s ease;
+}
+
+.card:hover, .card-dashboard:hover {
+    transform: translateY(-10px) rotateZ(0.2deg);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+}
+
+/* Dashboard Layout */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}
+
+/* Dashboard Card Text */
+.card-dashboard h2 {
+    color: #1E90FF;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.card-dashboard p {
+    font-size: 15px;
+    color: #555;
+}
+
+/* ========================
+   Forms / Inputs
+======================== */
+input, select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 10px 0;
+    border: 1px solid #c0d6ff;
+    border-radius: 12px;
+    outline: none;
+    background: #f0f9ff;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 12px rgba(0,123,255,0.3);
+}
+
+/* ========================
+   Tables
+======================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+table th, table td {
+    padding: 14px;
+    text-align: center;
+}
+
+table th {
+    background: linear-gradient(90deg, #007BFF, #00C6FF);
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #e6f7ff;
+}
+
+table tr:hover {
+    background-color: #cceeff;
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+/* ========================
+   Lists
+======================== */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin: 6px 0;
+    background: linear-gradient(135deg, #ffffff, #d0f0ff);
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+ul li:hover {
+    background: linear-gradient(135deg, #e0f8ff, #b8e0ff);
+    transform: scale(1.02);
+}
+
+/* ========================
+   Ticket Page
+======================== */
+.ticket-card {
+    max-width: 540px;
+    margin: 40px auto;
+    background: linear-gradient(145deg, #ffffff, #e0f7ff);
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.ticket-card.airport { border-top: 10px solid #1E90FF; }
+.ticket-card.railway { border-top: 10px solid #28a745; }
+
+.ticket-card h2 {
+    color: #1E90FF;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.ticket-card p {
+    margin: 12px 0;
+    font-size: 16px;
+}
+
+.ticket-qr { margin-top: 25px; }
+
+#downloadBtn {
+    margin-top: 25px;
+    padding: 14px 25px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #007BFF, #00C6FF);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideDown {
+    0% { opacity: 0; transform: translateY(-60px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ========================
+   Responsive
+======================== */
+@media (max-width:768px) {
+    .dashboard {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card, .card-dashboard, .ticket-card {
+        width: 92%;
+        padding: 25px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px 20px;
+    }
+}
